@@ -1,0 +1,51 @@
+---
+
+- hosts: dataduct
+  remote_user: vagrant
+  sudo: yes
+  tasks:
+   - name: "Install/Update Python 2.7 development libraries"
+     apt: pkg=python2.7-dev state=latest
+   - name: "Install/Update Python 2.7 NumPy"
+     apt: pkg=python-numpy state=latest
+   - name: "Install/Update Python 2.7 SciPy"
+     apt: pkg=python-scipy state=latest
+   - name: "Install/Update BLAS Development Library"
+     apt: pkg=libblas-dev state=latest
+   - name: "Install/Update LAPACK Development Library"
+     apt: pkg=liblapack-dev state=latest
+   - name: "Install/Update FORTRAN"
+     apt: pkg=gfortran state=latest
+   - name: "Install/Update BOTO"
+     apt: pkg=python-boto state=latest
+   - name: "Install/Update MySQL server"
+     apt: pkg=mysql-server state=latest
+   - name: "Install/Update MySQL development libraries"
+     apt: pkg=libmysqlclient-dev state=latest
+   - name: "Install/Update Pip: Python package manager"
+     apt: pkg=python-pip state=latest
+   - name: "Create pgdg.list"
+     template: src=src/pgdg.list dest=/etc/apt/sources.list.d/pgdg.list mode=0644
+   - name: "Download Postgres repo signing key"
+     get_url: 
+      url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+      dest: /tmp/pg-signing-key
+   - name: "Import Postgres repo signing key"
+     apt_key: file=/tmp/pg-signing-key state=present
+   - name: "Update Apt"
+     apt: update_cache=yes
+   - name: "Install/Update Postgres 9.4"
+     apt: pkg=postgresql-9.4 state=latest
+   - name: "Install/Update Postgres server"
+     apt: pkg=postgresql-server-dev-9.4 state=latest
+   - name: "Install/Update Python Pandas 0.17.0"
+     pip: name=pandas version=0.17.0 state=present
+   - name: "Install/Update MySQL for Python"
+     pip: name=MySQL-python state=latest
+   - name: "Install/Update Postgres for Python"
+     pip: name=psycopg2 state=latest
+   - name: "Install/Update Dataduct"
+     pip: name=dataduct state=latest
+
+#   - name: "Force applications to use the default language for output; force bytewise sorting"
+#     command: export LC_ALL=C
